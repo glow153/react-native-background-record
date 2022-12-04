@@ -1,0 +1,17 @@
+{
+  "name": "react-native-background-record",
+  "version": "0.5.4",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react-native"
+  ],
+  "author": "",
+  "license": "",
+  "peerDependencies": {
+    "react-native": "^0.69.3"
+  }
+}
