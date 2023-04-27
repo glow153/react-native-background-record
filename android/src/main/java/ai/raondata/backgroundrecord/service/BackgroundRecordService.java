@@ -87,53 +87,15 @@ public class BackgroundRecordService extends Service {
 
     private void init() {
         Log.d(TAG, "init() start");
-//        initMediaRecorder();
         initAudioRecord();
     }
 
     private void startRecord() {
-//        startMediaRecorder();
         startAudioRecord();
     }
 
     private void stopRecord() {
-//        stopMediaRecorder();
         stopAudioRecord();
-    }
-
-
-    private void initMediaRecorder() {
-        // dhpark: 순서 반드시 지킬것!
-        if (mediaRecorder != null) {
-            stopRecord();
-        }
-        mediaRecorder = new MediaRecorder();
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.WEBM);
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        mediaRecorder.setAudioEncodingBitRate(128000);
-        mediaRecorder.setAudioSamplingRate(16000);
-        Log.d(TAG, "init() : filepath = " + RECORD_FILEPATH);
-        mediaRecorder.setOutputFile(RECORD_FILEPATH);
-    }
-
-    private void startMediaRecorder() {
-        Log.d("BackgroundRecordService", "startRecord() &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-        try {
-            mediaRecorder.prepare();
-            mediaRecorder.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void stopMediaRecorder() {
-        Log.d("BackgroundRecordService", "stopRecord() &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-        if (mediaRecorder != null) {
-            mediaRecorder.stop();
-            mediaRecorder.release();
-            mediaRecorder = null;
-        }
     }
 
     private void initAudioRecord() {
@@ -175,11 +137,21 @@ public class BackgroundRecordService extends Service {
     }
 
     private AudioRecord createAudioRecord() {
-        bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT); //CHANNEL_IN_MONO, ENCODING_PCM_16BIT, 샘플링 레이트로 최소 버퍼 사이즈 구함
+        bufferSize = AudioRecord.getMinBufferSize( //CHANNEL_IN_MONO, ENCODING_PCM_16BIT, 샘플링 레이트로 최소 버퍼 사이즈 구함
+            SAMPLE_RATE, 
+            AudioFormat.CHANNEL_IN_MONO,
+            AudioFormat.ENCODING_PCM_16BIT
+        );
         if (bufferSize == AudioRecord.ERROR_BAD_VALUE) { // 값이 비정상임
             Log.e(TAG, "sizeInBytes is bad value");
         }
-        final AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize); // AudioRecord init 시도
+        final AudioRecord audioRecord = new AudioRecord( // AudioRecord init 시도
+            MediaRecorder.AudioSource.MIC,
+            SAMPLE_RATE,
+            AudioFormat.CHANNEL_IN_MONO,
+            AudioFormat.ENCODING_PCM_16BIT,
+            bufferSize
+        );
         if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED) { // 성공?
             buffer = new byte[bufferSize]; // byte[] 버퍼 생성
             return audioRecord;
